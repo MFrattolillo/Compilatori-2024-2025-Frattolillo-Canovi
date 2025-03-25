@@ -1,0 +1,9 @@
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/intrinsics_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/omp_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/acc_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/ARMTargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/AArch64TargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/RISCVTargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/MultiInstructionOptimization.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/edit_cache.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Multi Instruction Optimization/build/CMakeFiles/rebuild_cache.dir
