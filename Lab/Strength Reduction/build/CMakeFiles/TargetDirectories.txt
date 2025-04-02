@@ -1,0 +1,9 @@
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/intrinsics_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/omp_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/acc_gen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/ARMTargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/AArch64TargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/RISCVTargetParserTableGen.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/StrengthReduction.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/edit_cache.dir
+/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Lab/Strength Reduction/build/CMakeFiles/rebuild_cache.dir
