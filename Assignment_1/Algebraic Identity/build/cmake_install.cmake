@@ -1,4 +1,4 @@
-# Install script for directory: /home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Algebraic Identity
+# Install script for directory: /home/stecanovi/workspace/Laboratorio_Compilatori/Assign
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Algebraic Identity/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/stecanovi/workspace/Laboratorio_Compilatori/Assign/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -9,81 +9,68 @@ namespace {
   struct AlgebraicIdentity: PassInfoMixin<AlgebraicIdentity> {
 
     bool runOnFunction(Function &F) {
-      bool Transformed = false;
-      outs() << "\n";
-      outs() << " Eseguito il pass `AlgebraicIdentity` sulla Funzione: `" << F.getName() << "`\n";
-      outs() << "============================================================\n\n";
+      bool transformed=false;
+      
+       outs()<<"PRIMA DELL OTTIMIZZAZIONE----------\n";
+       for(auto &BB : F ){
+        for(auto &Inst : BB )
+         outs()<<Inst<<"\n";
+         outs()<<"---------------------------------\n";
+       }
 
-      // Stampa delle istruzioni PRIMA dell'ottimizzazione
-      outs() << "--------------------------------------\n";
-      outs() << " Istruzioni prima dell'ottimizzazione: \n";
-      outs() << "--------------------------------------\n\n";
-      for (BasicBlock &BB : F) {
-        for (Instruction &Instr : BB) {
-          Instr.print(outs());
-          outs() << "\n";
-        }
-      }
-
-      for (BasicBlock &BB : F) {
-        for (auto I = BB.begin(); I != BB.end(); ) {
-            Instruction &Instr = *I++;
-
-            if (Instr.getOpcode() == Instruction::Add) {
-                Value *operands[2] = { Instr.getOperand(0), Instr.getOperand(1) };
-    
-                // Trova l'operando non zero
-                Value *nonZeroOperand = nullptr;
-                for (Value *op : operands) {
-                    if (ConstantInt *CI = dyn_cast<ConstantInt>(op)) {
-                        if (CI->isZero()) continue;  // Se è zero, lo ignoriamo
-                    }
-                    nonZeroOperand = op;  // Salviamo l'operando valido
-                    break;
+       /*1.controllare se istruzione è add
+         2.controllo se uno dei 2 operandi è 0
+         3.sostituire tutti gli usi dell altro operando  
+         4.eliminare quell'istruzione  */
+        
+         for( BasicBlock &BB : F ){
+          for( auto it=BB.begin(); it != BB.end(); ){
+           Instruction &Inst = *it++;
+          
+            if( auto *op = dyn_cast<BinaryOperator>(&Inst)){
+              if( op->getOpcode() == Instruction::Add){
+                auto *op_const0 = dyn_cast<ConstantInt>(Inst.getOperand(0));
+                auto *op_const1 = dyn_cast<ConstantInt>(Inst.getOperand(1));
+                if( op_const0 && op_const0->getValue() == 0){
+                  Inst.replaceAllUsesWith(Inst.getOperand(1));
+                  Inst.eraseFromParent();
                 }
-    
-                // Se esiste un operando valido, sostituiamo l'istruzione
-                if (nonZeroOperand) {
-                    Instr.replaceAllUsesWith(nonZeroOperand);
-                    Instr.eraseFromParent();
-                    Transformed = true;
+                else {
+                  if( op_const1 && op_const1->getValue() == 0){
+                  Inst.replaceAllUsesWith(Inst.getOperand(0));
+                  Inst.eraseFromParent();
+                 }
                 }
-            }
-            else if(Instr.getOpcode() == Instruction::Mul) {
-              Value *operands[2] = {Instr.getOperand(0), Instr.getOperand(1) };
-              
-              Value *nonOneOperand = nullptr;
-              for( Value *op : operands){
-                if(ConstantInt *CI = dyn_cast<ConstantInt>(op)) {
-                  if(CI->getValue() == 1) continue;
-                }
-                nonOneOperand = op;
-                break;
               }
-
-              if(nonOneOperand) {
-                Instr.replaceAllUsesWith(nonOneOperand);
-                Instr.eraseFromParent();
-                Transformed = true;
+              else {
+                if(op->getOpcode() == Instruction::Mul){
+                 auto *op_const0 = dyn_cast<ConstantInt>(Inst.getOperand(0));
+                 auto *op_const1 = dyn_cast<ConstantInt>(Inst.getOperand(1));
+                  if( op_const0 && op_const0->getValue() == 1){
+                   Inst.replaceAllUsesWith(Inst.getOperand(1));
+                   Inst.eraseFromParent();
+                }
+                else {
+                  if( op_const1 && op_const1->getValue() == 1){
+                  Inst.replaceAllUsesWith(Inst.getOperand(0));
+                  Inst.eraseFromParent();
+                 }
+                }
+               }
               }
+             }  
             }
-        }
-    }
-    
+           }
+         
 
-      // Stampa delle istruzioni DOPO l'ottimizzazione
-      outs() << "\n";
-      outs() << "--------------------------------------\n";
-      outs() << " Istruzioni dopo dell'ottimizzazione: \n";
-      outs() << "--------------------------------------\n\n";
-      for (BasicBlock &BB : F) {
-        for (Instruction &Instr : BB) {
-          Instr.print(outs());
-          outs() << "\n";
-        }
-      }
+       outs()<<"DOPO L'OTTIMIZZAZIONE----------\n";
+       for(auto &BB : F ){
+        for(auto &Inst : BB )
+         outs()<<Inst<<"\n";
+         outs()<<"---------------------------------\n";
+       }
 
-      return Transformed;
+      return transformed;
     }
 
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &) {

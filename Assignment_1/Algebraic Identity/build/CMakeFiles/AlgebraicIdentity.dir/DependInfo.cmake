@@ -8,11 +8,15 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/frt/compilatori/Compilatori-2024-2025-Frattolillo-Canovi/Assignment_1/Algebraic Identity/AlgebraicIdentity.cpp" "CMakeFiles/AlgebraicIdentity.dir/AlgebraicIdentity.cpp.o" "gcc" "CMakeFiles/AlgebraicIdentity.dir/AlgebraicIdentity.cpp.o.d"
+  "/home/stecanovi/workspace/Laboratorio_Compilatori/Assign/AlgebraicIdentity.cpp" "CMakeFiles/AlgebraicIdentity.dir/AlgebraicIdentity.cpp.o" "gcc" "CMakeFiles/AlgebraicIdentity.dir/AlgebraicIdentity.cpp.o.d"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.
