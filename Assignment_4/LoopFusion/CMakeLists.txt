@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(LoopFusion)
+project(LoopFusionPass)
 
 #===============================================================================
 # 1. LOAD LLVM CONFIGURATION
@@ -16,11 +16,8 @@ if("${LLVM_VERSION_MAJOR}" VERSION_LESS 19)
   message(FATAL_ERROR "Found LLVM ${LLVM_VERSION_MAJOR}, but need LLVM 19 or above")
 endif()
 
-# Include LLVM headers
+# HelloWorld includes headers from LLVM - update the include paths accordingly
 include_directories(SYSTEM ${LLVM_INCLUDE_DIRS})
-
-# Include the directory containing LoopFusionPass.h
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 #===============================================================================
 # 2. BUILD CONFIGURATION
@@ -36,12 +33,9 @@ endif()
 #===============================================================================
 # 3. ADD THE TARGET
 #===============================================================================
-add_library(LoopFusion SHARED LoopFusion.cpp)
 add_library(LoopFusionPass SHARED LoopFusionPass.cpp)
 
-# Link LLVM libraries
-target_link_libraries(LoopFusion
-  "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>")
+# Allow undefined symbols in shared objects on Darwin (this is the default
+# behaviour on Linux)
 target_link_libraries(LoopFusionPass
   "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>")
-  
