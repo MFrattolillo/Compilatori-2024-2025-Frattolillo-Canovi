@@ -20,53 +20,58 @@ define dso_local void @loopFusionExample(i32 noundef %0) #0 {
   store i32 0, ptr %6, align 4
   br label %8
 
-8:                                                ; preds = %19, %1
+8:                                                ; preds = %21, %1
   %9 = load i32, ptr %6, align 4
-  %10 = add nsw i32 %9, 1
-  store i32 %10, ptr %6, align 4
-  %11 = load i32, ptr %6, align 4
-  %12 = sext i32 %11 to i64
-  %13 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %12
-  %14 = load i32, ptr %13, align 4
-  %15 = add nsw i32 %14, 1
-  %16 = load i32, ptr %6, align 4
-  %17 = sext i32 %16 to i64
-  %18 = getelementptr inbounds [5 x i32], ptr %3, i64 0, i64 %17
-  store i32 %15, ptr %18, align 4
-  br label %19
+  %10 = load i32, ptr %2, align 4
+  %11 = icmp slt i32 %9, %10
+  br i1 %11, label %12, label %24
 
-19:                                               ; preds = %8
-  %20 = load i32, ptr %6, align 4
-  %21 = load i32, ptr %2, align 4
-  %22 = icmp slt i32 %20, %21
-  br i1 %22, label %8, label %23, !llvm.loop !6
+12:                                               ; preds = %8
+  %13 = load i32, ptr %6, align 4
+  %14 = sext i32 %13 to i64
+  %15 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %14
+  %16 = load i32, ptr %15, align 4
+  %17 = add nsw i32 %16, 1
+  %18 = load i32, ptr %6, align 4
+  %19 = sext i32 %18 to i64
+  %20 = getelementptr inbounds [5 x i32], ptr %3, i64 0, i64 %19
+  store i32 %17, ptr %20, align 4
+  br label %21
 
-23:                                               ; preds = %19
+21:                                               ; preds = %12
+  %22 = load i32, ptr %6, align 4
+  %23 = add nsw i32 %22, 1
+  store i32 %23, ptr %6, align 4
+  br label %8, !llvm.loop !6
+
+24:                                               ; preds = %8
   store i32 0, ptr %7, align 4
-  br label %24
+  br label %25
 
-24:                                               ; preds = %35, %23
-  %25 = load i32, ptr %7, align 4
-  %26 = add nsw i32 %25, 1
-  store i32 %26, ptr %7, align 4
-  %27 = load i32, ptr %7, align 4
-  %28 = sext i32 %27 to i64
-  %29 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %28
-  %30 = load i32, ptr %29, align 4
-  %31 = mul nsw i32 %30, 2
-  %32 = load i32, ptr %7, align 4
-  %33 = sext i32 %32 to i64
-  %34 = getelementptr inbounds [5 x i32], ptr %5, i64 0, i64 %33
-  store i32 %31, ptr %34, align 4
-  br label %35
+25:                                               ; preds = %37, %24
+  %26 = load i32, ptr %7, align 4
+  %27 = icmp slt i32 %26, 22
+  br i1 %27, label %28, label %40
 
-35:                                               ; preds = %24
-  %36 = load i32, ptr %7, align 4
-  %37 = load i32, ptr %2, align 4
-  %38 = icmp slt i32 %36, %37
-  br i1 %38, label %24, label %39, !llvm.loop !8
+28:                                               ; preds = %25
+  %29 = load i32, ptr %7, align 4
+  %30 = sext i32 %29 to i64
+  %31 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %30
+  %32 = load i32, ptr %31, align 4
+  %33 = mul nsw i32 %32, 2
+  %34 = load i32, ptr %7, align 4
+  %35 = sext i32 %34 to i64
+  %36 = getelementptr inbounds [5 x i32], ptr %5, i64 0, i64 %35
+  store i32 %33, ptr %36, align 4
+  br label %37
 
-39:                                               ; preds = %35
+37:                                               ; preds = %28
+  %38 = load i32, ptr %7, align 4
+  %39 = add nsw i32 %38, 1
+  store i32 %39, ptr %7, align 4
+  br label %25, !llvm.loop !8
+
+40:                                               ; preds = %25
   ret void
 }
 

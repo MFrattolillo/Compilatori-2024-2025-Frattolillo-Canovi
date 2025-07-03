@@ -460,7 +460,12 @@ struct LoopFusionPass : PassInfoMixin<LoopFusionPass> {
             if (!hasDependence(loops[i], loops[i + 1], DI))
                     outs() << "loop dep ok\n";
 
-             loopFusionUnGuarded(loops[i], loops[i + 1],F,loopinfo);
+             if(isGuarded(loops[i]) && isGuarded(loops[i+1])) {
+               loopFusion(loops[i], loops[i + 1],F,loopinfo);
+             }
+             else if(!isGuarded(loops[i]) && !isGuarded(loops[i+1])){
+              loopFusionUnGuarded(loops[i], loops[i + 1],F,loopinfo);
+             }
         }
 
        
