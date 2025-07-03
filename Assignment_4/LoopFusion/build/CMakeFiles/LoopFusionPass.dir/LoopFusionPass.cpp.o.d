@@ -446,6 +446,7 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: \
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/IR/ProfileSummary.h \
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopRotation.h \
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Analysis/DependenceAnalysis.h \
+ /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/IndVarSimplify.h \
  /usr/include/c++/13/cmath /usr/include/math.h \
  /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \

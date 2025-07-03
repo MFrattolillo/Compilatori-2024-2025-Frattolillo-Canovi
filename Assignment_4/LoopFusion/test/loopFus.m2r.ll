@@ -15,48 +15,42 @@ define dso_local void @loopFusionExample(i32 noundef %0) #0 {
   call void @llvm.memset.p0.i64(ptr align 16 %4, i8 0, i64 20, i1 false)
   br label %5
 
-5:                                                ; preds = %14, %1
-  %.01 = phi i32 [ 0, %1 ], [ %15, %14 ]
-  %6 = icmp slt i32 %.01, %0
-  br i1 %6, label %7, label %16
+5:                                                ; preds = %13, %1
+  %.01 = phi i32 [ 0, %1 ], [ %6, %13 ]
+  %6 = add nsw i32 %.01, 1
+  %7 = sext i32 %6 to i64
+  %8 = getelementptr inbounds [5 x i32], ptr %3, i64 0, i64 %7
+  %9 = load i32, ptr %8, align 4
+  %10 = add nsw i32 %9, 1
+  %11 = sext i32 %6 to i64
+  %12 = getelementptr inbounds [5 x i32], ptr %2, i64 0, i64 %11
+  store i32 %10, ptr %12, align 4
+  br label %13
 
-7:                                                ; preds = %5
-  %8 = sext i32 %.01 to i64
-  %9 = getelementptr inbounds [5 x i32], ptr %3, i64 0, i64 %8
-  %10 = load i32, ptr %9, align 4
-  %11 = add nsw i32 %10, 1
-  %12 = sext i32 %.01 to i64
-  %13 = getelementptr inbounds [5 x i32], ptr %2, i64 0, i64 %12
-  store i32 %11, ptr %13, align 4
-  br label %14
+13:                                               ; preds = %5
+  %14 = icmp slt i32 %6, %0
+  br i1 %14, label %5, label %15, !llvm.loop !6
 
-14:                                               ; preds = %7
-  %15 = add nsw i32 %.01, 1
-  br label %5, !llvm.loop !6
+15:                                               ; preds = %13
+  br label %16
 
-16:                                               ; preds = %5
-  br label %17
+16:                                               ; preds = %24, %15
+  %.0 = phi i32 [ 0, %15 ], [ %17, %24 ]
+  %17 = add nsw i32 %.0, 1
+  %18 = sext i32 %17 to i64
+  %19 = getelementptr inbounds [5 x i32], ptr %3, i64 0, i64 %18
+  %20 = load i32, ptr %19, align 4
+  %21 = mul nsw i32 %20, 2
+  %22 = sext i32 %17 to i64
+  %23 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %22
+  store i32 %21, ptr %23, align 4
+  br label %24
 
-17:                                               ; preds = %26, %16
-  %.0 = phi i32 [ 0, %16 ], [ %27, %26 ]
-  %18 = icmp slt i32 %.0, %0
-  br i1 %18, label %19, label %28
+24:                                               ; preds = %16
+  %25 = icmp slt i32 %17, %0
+  br i1 %25, label %16, label %26, !llvm.loop !8
 
-19:                                               ; preds = %17
-  %20 = sext i32 %.0 to i64
-  %21 = getelementptr inbounds [5 x i32], ptr %2, i64 0, i64 %20
-  %22 = load i32, ptr %21, align 4
-  %23 = mul nsw i32 %22, 2
-  %24 = sext i32 %.0 to i64
-  %25 = getelementptr inbounds [5 x i32], ptr %4, i64 0, i64 %24
-  store i32 %23, ptr %25, align 4
-  br label %26
-
-26:                                               ; preds = %19
-  %27 = add nsw i32 %.0, 1
-  br label %17, !llvm.loop !8
-
-28:                                               ; preds = %17
+26:                                               ; preds = %24
   ret void
 }
 

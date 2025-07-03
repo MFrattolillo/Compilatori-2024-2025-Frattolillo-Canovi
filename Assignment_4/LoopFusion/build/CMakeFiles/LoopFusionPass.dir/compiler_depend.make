@@ -237,6 +237,7 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: /home/stecanovi/workspace/La
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/IPO/Inliner.h \
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/IPO/ModuleInliner.h \
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Instrumentation.h \
+  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/IndVarSimplify.h \
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopPassManager.h \
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopRotation.h \
   /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Utils/LCSSA.h \
@@ -860,6 +861,10 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: /home/stecanovi/workspace/La
 
 /usr/include/c++/13/bits/atomic_lockfree_defines.h:
 
+/usr/include/c++/13/unordered_map:
+
+/usr/include/c++/13/bits/allocator.h:
+
 /usr/include/c++/13/optional:
 
 /usr/include/c++/13/bits/vector.tcc:
@@ -1155,10 +1160,6 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: /home/stecanovi/workspace/La
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/MC/MCFixup.h:
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Support/GenericDomTree.h:
-
-/usr/include/c++/13/tr1/poly_hermite.tcc:
-
-/home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/IR/Use.h:
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/IR/GlobalAlias.h:
 
@@ -1498,6 +1499,12 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: /home/stecanovi/workspace/La
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Support/InstructionCost.h:
 
+/usr/include/c++/13/tr1/poly_hermite.tcc:
+
+/home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/IR/Use.h:
+
+/home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/IndVarSimplify.h:
+
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Passes/PassPlugin.h:
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Support/ModRef.h:
@@ -1533,10 +1540,6 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o: /home/stecanovi/workspace/La
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Support/xxhash.h:
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/IPO/Inliner.h:
-
-/usr/include/c++/13/unordered_map:
-
-/usr/include/c++/13/bits/allocator.h:
 
 /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopRotation.h:
 

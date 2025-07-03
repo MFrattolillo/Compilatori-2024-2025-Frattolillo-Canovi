@@ -238,6 +238,7 @@ CMakeFiles/LoopFusionPass.dir/LoopFusionPass.cpp.o
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/IPO/Inliner.h
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/IPO/ModuleInliner.h
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Instrumentation.h
+ /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/IndVarSimplify.h
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopPassManager.h
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Scalar/LoopRotation.h
  /home/stecanovi/workspace/LLVM-19.1.7-Linux-X64/include/llvm/Transforms/Utils/LCSSA.h
