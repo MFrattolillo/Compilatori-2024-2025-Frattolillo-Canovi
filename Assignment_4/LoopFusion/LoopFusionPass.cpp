@@ -46,15 +46,16 @@ bool isGuarded(Loop *L) {
 bool isAdjacent( Loop *a , Loop *b ){
    
    if( !a || !b )
-     return false;
+      return false;
 
-   BasicBlock *eb = a->getExitBlock();
-   if( !eb ) return false;
+   /*BasicBlock *eb = a->getExitBlock();
+   if( !eb ) return false;*/
 
    SmallVector<BasicBlock *, 4> exits;
    a->getExitBlocks(exits);
    
    BasicBlock *Preheader = b->getLoopPreheader();
+   outs()<<"Prheader di C -->" << *Preheader << "\n";
    
     bool combacia = false;
     for( BasicBlock *bb : exits ){
@@ -87,17 +88,14 @@ bool isScalEv(Loop *A, Loop *B, ScalarEvolution &SCE) {
     const SCEV *tripA = SCE.getBackedgeTakenCount(A);
     const SCEV *tripB = SCE.getBackedgeTakenCount(B);
 
-    if (isa<SCEVCouldNotCompute>(tripA) || isa<SCEVCouldNotCompute>(tripB)) {
-        /*outs() << "Trip count non calcolabile\n";*/
+    if (isa<SCEVCouldNotCompute>(tripA) || isa<SCEVCouldNotCompute>(tripB)) {      
         return false;
     }
 
     if (tripA == tripB) {
-        /*outs() << "Trip count simbolicamente uguali\n";*/
         return true;
     }
 
-    /*outs() << "Trip count diversi\n";*/
     return false;
 }
 
@@ -144,114 +142,6 @@ bool hasDependence(Loop *L0, Loop *L1, DependenceInfo &DI) {
 }
 
 
-/*void loopFusion(Loop *a, Loop *b, ScalarEvolution &SCE) {
-    auto *header_a = a->getHeader();
-    auto *header_b = b->getHeader();
-
-    auto &blocks_a = a->getBlocksVector();
-    auto &blocks_b = b->getBlocksVector();
-
-    auto *latch_a = a->getLoopLatch();
-    auto *latch_b = b->getLoopLatch();
-
-    auto *preheader_a = a->getLoopPreheader();
-    auto *preheader_b = b->getLoopPreheader();
-
-    PHINode *indvar_a = a->getCanonicalInductionVariable();
-    PHINode *indvar_b = b->getCanonicalInductionVariable();
-
-    auto *exitBlock_a  = a->getExitBlock();
-    auto *exitBlock_b = b->getExitBlock();
-
-    auto *aLoopG = a->getLoopGuardBranch();
-    auto *bLoopG = b->getLoopGuardBranch();
-
-    if (!indvar_a || !indvar_b) {
-        errs() << "Errore: induction variable non riconosciute\n";
-        return;
-    }
-
-   for (BasicBlock *BB : blocks_b) {
-        for (Instruction &I : *BB) {
-            for (unsigned i = 0; i < I.getNumOperands(); ++i) {
-                if (I.getOperand(i) == indvar_b) {
-                    I.setOperand(i, indvar_a);
-                }
-            }
-        }
-    }
-
-    // Elimina indvar_b se non usata
-    if (indvar_b->use_empty()) {
-        indvar_b->eraseFromParent();
-    }
-
-}*/
-
-/*void loopFusion(Loop *a, Loop *b, ScalarEvolution &SCE) {
-    auto *header_a = a->getHeader();
-    auto *header_b = b->getHeader();
-
-    auto &blocks_a = a->getBlocksVector();
-    auto &blocks_b = b->getBlocksVector();
-
-    auto *latch_a = a->getLoopLatch();
-    auto *latch_b = b->getLoopLatch();
-
-    auto *preheader_a = a->getLoopPreheader();
-    auto *preheader_b = b->getLoopPreheader();
-    
-
-    PHINode *indvar_a = a->getCanonicalInductionVariable();
-    PHINode *indvar_b = b->getCanonicalInductionVariable();
-
-    auto *exitBlock_a  = a->getExitBlock();
-    auto *exitBlock_b = b->getExitBlock();
-
-    auto *aLoopG = a->getLoopGuardBranch();
-    auto *bLoopG = b->getLoopGuardBranch();
-
-    indvar_b->replaceAllUsesWith(indvar_a);
-    indvar_b->eraseFromParent();
-    
-    BasicBlock *lastBlockA = nullptr;
-    for (BasicBlock *pred : predecessors(latch_a)) {
-       if (a->contains(pred)) {
-        lastBlockA = pred;
-        break; // puoi estendere se ci sono più candidati
-      }
-     }
-
-     auto *instr = lastBlockA->getTerminator();
-     auto *br = dyn_cast<BranchInst>(instr);
-     br->setSuccessor(0, header_b);
-
-     auto *br_b = dyn_cast<BranchInst>(latch_b->getTerminator());
-     br_b->setSuccessor(0, header_a);
-
-     //ciclo sul blocco di latch_a per trovare l'istruzione che aggiorna l'indvar
-     Instruction *phi;
-     for( Instruction &I : *latch_b ){
-        if( auto *binOp = dyn_cast<BinaryOperator>(&I) ){
-            if( binOp->getOperand(0) == indvar_a || binOp->getOperand(1) == indvar_a ){
-                phi = &I;
-            }
-        }
-     }
-
-    indvar_a->removeIncomingValue(latch_a,  false);
-    indvar_a->addIncoming(phi, latch_b);
-    header_a->removePredecessor(latch_a, false);
-    if (latch_a->use_empty()) {
-  // nessuna istruzione fa più riferimento a latch_a
-} else {
-  // c'è almeno un use
-  unsigned n = latch_a->getNumUses();
-  errs() << "latch_a ha " << n << " use ancora aperti\n";
-}
-
-}*/
-
 //Funzione che restituisce il blocco body di un loop
 BasicBlock *getLoopBody(Loop *L) {
   BasicBlock *Header   = L->getHeader();
@@ -262,7 +152,7 @@ BasicBlock *getLoopBody(Loop *L) {
     if (!L->contains(Succ))
       continue; 
 
-    if (Succ == Latch) //Se l'header ha come successore il latch, allora il body è l'header (caso dei loop guarded)
+    if (Succ == Latch)
       Body = Header;
     else 
       Body = Succ;
@@ -283,25 +173,6 @@ void moreLoop(BasicBlock *L1Body, BasicBlock *L0Body, BasicBlock *L0Latch) {
     moreLoop( L1Body, T0->getSuccessor(0), L0Latch); 
   }
 }
-
-
-
-/*void loopFusion(Loop *L0, Loop *L1, Function &F, LoopInfo &LI) {
- 
-  
-  PHINode *indvar0 = L0->getCanonicalInductionVariable();
-  PHINode *indvar1 = L1->getCanonicalInductionVariable();
-  if (!indvar0 || !indvar1) {
-    errs() << "Induction variable non trovata\n";
-    return;
-  }
-
-  outs()<<"indvar0: "<<*indvar0<<"\n";
-  outs()<<"indvar1: "<<*indvar1<<"\n";
-  // 2) Branch da L0Body → L1Body e da L1Body → L0Latch
-
-  
-}*/
 
 //Funzione che fonde i loop NON Guarded
 void loopFusion(Loop *L0, Loop *L1, Function &F, LoopInfo &LI) {
@@ -421,7 +292,7 @@ void loopFusionUnGuarded(Loop *L0, Loop *L1, Function &F, LoopInfo &LI) {
 
 struct LoopFusionPass : PassInfoMixin<LoopFusionPass> { 
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM) {
-
+    
       bool changed = true;
     while (changed) {
         changed = false;
@@ -434,44 +305,64 @@ struct LoopFusionPass : PassInfoMixin<LoopFusionPass> {
         
         auto loops = loopinfo.getLoopsInPreorder();
 
+        if (loops.size() < 2) 
+        break;
+
         for (int i = 0; i + 1 < loops.size(); i++) {
 
-             if (isGuarded(loops[i]) != isGuarded(loops[i+1]))
-                continue;
-
-            if (isGuarded(loops[i]) == isGuarded(loops[i+1])){
-              if (!isAdjacent(loops[i], loops[i + 1]))
-                 continue;
-                  
+             if (isGuarded(loops[i]) != isGuarded(loops[i+1])){
+               outs()<<"loop non entrambi guarded o unguarded\n";
+               continue;
+             }
+          
+             outs() << "loop entrambi guarded o unguarded ok \n";
             
+            
+             if (!isAdjacent(loops[i], loops[i + 1])){
+               outs()<<"loop non adiacenti\n";
+               continue;
+              } 
                 outs() << "loop adjacent ok \n";
             
-                if (!controlFlowEq(loops[i], loops[i+1], DT, PDT))
-                    continue;
-
+             if (!controlFlowEq(loops[i], loops[i+1], DT, PDT)){
+               outs()<<"non rispettano il controllo di flusso\n";
+               continue;
+             } 
                 outs() << "loop dominance ok \n";
-                
-            }
+
+
+             if( !isScalEv( loops[i], loops[i+1], SCE)){
+                outs()<<"trip count non uguali\n";
+                continue;
+             } 
+                outs() << "loop bounds ok \n";
+
+
+              if (hasDependence(loops[i], loops[i + 1], DI)) continue;
+                 outs() << "loop dep ok\n";
+
+
+              if(isGuarded(loops[i])) {
+                 loopFusion(loops[i], loops[i + 1],F,loopinfo);
+                 
+                } else {
+                 loopFusionUnGuarded(loops[i], loops[i + 1],F,loopinfo);
+                }
+
+              outs() << "loop fusion eseguita\n";
               
-            if( isScalEv( loops[i], loops[i+1], SCE))
-             outs() << "loop bounds ok \n";
-
-
-            if (!hasDependence(loops[i], loops[i + 1], DI))
-                    outs() << "loop dep ok\n";
-
-             if(isGuarded(loops[i]) && isGuarded(loops[i+1])) {
-               loopFusion(loops[i], loops[i + 1],F,loopinfo);
-             }
-             else if(!isGuarded(loops[i]) && !isGuarded(loops[i+1])){
-              loopFusionUnGuarded(loops[i], loops[i + 1],F,loopinfo);
-             }
+              loopinfo.erase(loops[i+1]);
+              changed = true;
+              
+              break;
         }
 
-       
+
         for( BasicBlock &BB : F){
              outs()<<BB<<"\n";
          }
+         outs() << "------------------------\n";
+
     }
 
         return PreservedAnalyses::none();
