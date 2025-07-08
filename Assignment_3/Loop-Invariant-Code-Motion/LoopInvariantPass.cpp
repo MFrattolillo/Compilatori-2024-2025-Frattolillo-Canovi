@@ -47,26 +47,6 @@ bool isSafeToHoist(Instruction *Instr, Loop *L, DominatorTree &DT) {
     return DT.dominates(Header, BB);
 }
 
-bool preheaderDominatesAllExits(Loop *L, DominatorTree &DT) {
-    BasicBlock *PreHeader = L->getLoopPreheader();
-    if (!PreHeader)
-        return false; // Non c'è un preheader → non puoi spostare codice
-
-    // Trova tutte le uscite del loop
-    SmallVector<BasicBlock *, 8> ExitBlocks;
-    L->getExitBlocks(ExitBlocks);
-
-    // Controlla se il PreHeader domina tutte le uscite
-    for (BasicBlock *ExitBB : ExitBlocks) {
-        if (!DT.dominates(PreHeader, ExitBB)) {
-            return false; // Se anche una sola uscita non è dominata → non va bene
-        }
-    }
-
-    return true; // Ok, il PreHeader domina tutte le uscite
-}
-
-
 SmallVector<BasicBlock *, 8> getLoopExitBlocks(Loop *L) {
     SmallVector<BasicBlock *, 8> exitBlocks;
 
@@ -80,7 +60,6 @@ SmallVector<BasicBlock *, 8> getLoopExitBlocks(Loop *L) {
 
     return exitBlocks;
 }
-
 bool isDeadOutsideLoop(Instruction *instr, Loop *loop) {
     bool result = true;
     
@@ -93,25 +72,32 @@ bool isDeadOutsideLoop(Instruction *instr, Loop *loop) {
     return result;
 }
 
+
 bool isBlockValidForCodeMotion(Instruction *I, Loop *L, DominatorTree *DT) {
     BasicBlock *instBlock = I->getParent();
     BasicBlock *preheader = L->getLoopPreheader();
 
-    // Controlla che il blocco dell'istruzione sia dominato dal preheader
-    if (!DT->dominates(preheader, instBlock))
+    if (!preheader) {
+        errs() << "Loop has NO preheader\n";
         return false;
+    }
+    if (!DT->dominates(preheader, instBlock)) {
+        errs() << "Preheader (" << *preheader << ") does NOT dominate instruction block (" << *instBlock << ")\n";
+        return false;
+    }
 
-    // Ottieni i blocchi di uscita
     SmallVector<BasicBlock *, 8> exitBlocks = getLoopExitBlocks(L);
 
-    // Verifica che il blocco dell'istruzione domini tutte le uscite
     for (BasicBlock *exit : exitBlocks) {
-        if (!DT->dominates(instBlock, exit))
+        if (!DT->dominates(instBlock, exit)) {
             return false;
+        }
     }
 
     return true;
 }
+
+
 
 bool dominatesAllUses(Instruction *Instr, Loop *L, DominatorTree &DT) {
     BasicBlock *defBB = Instr->getParent();
@@ -124,43 +110,6 @@ bool dominatesAllUses(Instruction *Instr, Loop *L, DominatorTree &DT) {
                 return false;
         }
     }
-    return true;
-}
-
-bool isNotRedefinedInLoop(Instruction *Instr, Loop *L) {
-    // Per le istruzioni store, verifichiamo che la stessa memoria non venga modificata altrove
-    if (StoreInst *Store = dyn_cast<StoreInst>(Instr)) {
-        Value *Ptr = Store->getPointerOperand();
-        
-        for (BasicBlock *BB : L->blocks()) {
-            for (auto &I : *BB) {
-                if (&I == Instr) continue;
-                
-                // Controlla altri store
-                if (StoreInst *OtherStore = dyn_cast<StoreInst>(&I)) {
-                    if (OtherStore->getPointerOperand() == Ptr) {
-                        return false;  // Un altro store modifica la stessa memoria
-                    }
-                }
-            }
-        }
-        return true;
-    }
-    
-    // Per altre istruzioni in SSA, ogni definizione è già unica
-    // ma dobbiamo assicurarci che non ci siano istruzioni che potrebbero
-    // modificare indirettamente il valore (attraverso puntatori)
-    
-    // Se l'istruzione definisce un valore
-    if (!Instr->getType()->isVoidTy()) {
-        // In SSA, ogni valore è definito una sola volta, quindi non può essere ridefinito
-        // Ma dobbiamo verificare che non ci siano altre istruzioni che modificano
-        // la stessa memoria attraverso puntatori
-        
-        // Questo è un controllo semplificato, in pratica servirebbe un'analisi di alias
-        return true;
-    }
-    
     return true;
 }
 
@@ -178,8 +127,11 @@ static bool allDefsMoved(Instruction *I,Loop *L,SmallPtrSetImpl<Instruction*> &M
 
     for (Value *Op : I->operands()) {
         auto *Def = dyn_cast<Instruction>(Op);
-        if (Def && L->contains(Def) && !Moved.count(Def))
+        if (Def && L->contains(Def) && !Moved.count(Def)){
+            errs() << "Definizione non ancora spostata: " << *Def << "\n";
             return false;
+        }
+            
     }
 
   return true;
@@ -201,20 +153,23 @@ struct LoopInvariantPass : PassInfoMixin<LoopInvariantPass> {
 
             SmallPtrSet<Instruction *, 16> Moved;
 
+            
             for (BasicBlock *BB : LoopOrder) {
                 for (auto &I : *BB) {
                     Instruction *Instr = &I;
+
+
 
                     if (isLoopInvariant(Instr, L) &&
                         allDefsMoved(Instr, L, Moved) &&
                         (isBlockValidForCodeMotion(Instr, L, &DT) ||
                          isDeadOutsideLoop(Instr, L)) &&
-                        dominatesAllUses(Instr, L, DT) &&
-                        isNotRedefinedInLoop(Instr, L)) {
+                        dominatesAllUses(Instr, L, DT)) {
 
-                        Instr->setMetadata("LoopInvariant", nullptr);
+                        
                         outs() << "Istruzione su cui fare la code-motion : " << *Instr << "\n";
                         Moved.insert(Instr);
+
                     }
                 }
             }
@@ -254,4 +209,3 @@ extern "C" LLVM_ATTRIBUTE_WEAK ::llvm::PassPluginLibraryInfo
 llvmGetPassPluginInfo() {
   return getLoopInvariantPassPluginInfo();
 }
-
